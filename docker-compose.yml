@@ -1,11 +1,16 @@
 version: "2"
 
+volumes: 
+        prometheus_data: {}
+        grafana_data: {}
+
 services: 
     prometheus:
         image: prom/prometheus:v2.27.0
         ports: 
             - 9090:9090
         volumes: 
+            - prometheus_data:/prometheus
             - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
         # command: 
         #     - '--config.file=/etc/prometheus/prometheus.yml'
@@ -18,10 +23,19 @@ services:
         ports:
             - 3000:3000
         volumes: 
+            - grafana_data:/var/lib/grafana
             - ./grafana/dashboards:/var/lib/grafana/dashboards
             - ./grafana/provisioning:/etc/grafana/provisioning
         # env_file: 
         #     - config.file
+
+    alertmanager:
+        image: prom/alertmanager:v0.21.0
+        ports: 
+            - 9093:9093
+        # volumes: 
+        #     - ./alertmanager/:/etc/alertmanager/
+
 
 
 
